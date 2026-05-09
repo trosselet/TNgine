@@ -13,23 +13,36 @@ PROPERTIES
 
 target_include_directories(Application
 PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
 )
 
 target_link_libraries(Application
 PRIVATE
-    Engine::Core
-    Engine::Platform
-    Engine::RHI
-    Engine::Assets
-    Engine::Scene
-    Engine::Render
+    TNgine::Core
+    TNgine::Platform
+    TNgine::RHI
+    TNgine::Assets
+    TNgine::Scene
+    TNgine::Render
 )
 
 if(ENGINE_ENABLE_VULKAN)
     target_link_libraries(Application
     PRIVATE
-        Engine::VulkanBackend
+        TNgine::VulkanBackend
+    )
+endif()
+if(ENGINE_ENABLE_OPENGL)
+    target_link_libraries(Application
+    PRIVATE
+        TNgine::OpenGLBackend
+    )
+endif()
+
+if(ENGINE_ENABLE_D3D12)
+    target_link_libraries(Application
+    PRIVATE
+        TNgine::D3D12Backend
     )
 endif()
 

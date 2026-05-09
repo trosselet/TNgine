@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(Engine
+project(TNgine
     VERSION 0.1.0
     LANGUAGES CXX
 )
@@ -15,9 +15,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Output directories
 # =========================================================
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+# For multi-config generators (Visual Studio/Ninja Multi-Config) put outputs in
+# configuration-specific subdirectories so the linker can find them.
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/bin)
 
 # =========================================================
 # Modules
@@ -31,6 +33,7 @@ include(Options)
 include(CompilerWarnings)
 include(Dependencies)
 include(ShaderCompilation)
+include(ModuleIncludes)
 
 # =========================================================
 # Subdirectories

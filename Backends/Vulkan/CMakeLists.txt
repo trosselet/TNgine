@@ -1,34 +1,43 @@
 find_package(Vulkan REQUIRED)
 
-file(GLOB_RECURSE VULKAN_SOURCES
+file(GLOB_RECURSE VULKAN_HEADERS
     CONFIGURE_DEPENDS
-    *.cpp
     *.h
 )
 
-add_library(VulkanBackend STATIC ${VULKAN_SOURCES})
-
-add_library(Engine::VulkanBackend ALIAS VulkanBackend)
-
-target_include_directories(VulkanBackend
-PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
+file(GLOB_RECURSE VULKAN_SRCS
+    CONFIGURE_DEPENDS
+    *.cpp
 )
 
-target_link_libraries(VulkanBackend
-PUBLIC
-    Engine::Core
-    Engine::RHI
-    Vulkan::Vulkan
-)
+if(VULKAN_SRCS)
+    add_library(VulkanBackend STATIC ${VULKAN_SRCS} ${VULKAN_HEADERS})
+    set(VULKAN_IS_INTERFACE OFF)
+else()
+    add_library(VulkanBackend INTERFACE)
+    target_sources(VulkanBackend INTERFACE ${VULKAN_HEADERS})
+    set(VULKAN_IS_INTERFACE ON)
+endif()
 
-# VMA
-# spirv-cross
-# volk
+add_library(TNgine::VulkanBackend ALIAS VulkanBackend)
 
-target_compile_definitions(VulkanBackend
-PRIVATE
-    VK_NO_PROTOTYPES
-)
+if(VULKAN_IS_INTERFACE)
+    # Header-only: expose project root so consumers can include <VulkanBackend/...>
+    target_include_directories(VulkanBackend INTERFACE ${CMAKE_SOURCE_DIR})
+    target_link_libraries(VulkanBackend INTERFACE TNgine::Core TNgine::RHI Vulkan::Vulkan)
+else()
+    # Use module dir for building, expose project root to consumers
+    target_include_directories(VulkanBackend
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+        INTERFACE ${CMAKE_SOURCE_DIR}
+    )
+    target_link_libraries(VulkanBackend PUBLIC TNgine::Core TNgine::RHI Vulkan::Vulkan)
+endif()
+
+if(VULKAN_IS_INTERFACE)
+    target_compile_definitions(VulkanBackend INTERFACE VK_NO_PROTOTYPES)
+else()
+    target_compile_definitions(VulkanBackend PRIVATE VK_NO_PROTOTYPES)
+endif()
 
 set_project_warnings(VulkanBackend)
