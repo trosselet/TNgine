@@ -1,12 +1,14 @@
 #include "Application.h"
 
 #include <Core/Math/Transform.hpp>
+#include <Core/Logging/Logging.h>
+#include <Core/Utils/Utils.hpp>
 
 namespace TNgine
 {
 	void Application::Init()
 	{
-		// Initialize the application
+		Core::Log::Instance().Create();
 	}
 	void Application::Run()
 	{

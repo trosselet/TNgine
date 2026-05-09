@@ -1,7 +1,7 @@
 #ifndef UUID_H__INCLUDED
 #define UUID_H__INCLUDED
 
-#include <Core/define.h>
+#include "../define.h"
 
 namespace TNgine
 {
@@ -10,11 +10,11 @@ namespace TNgine
 		class UUID
 		{
 		public:
-			UUID() = default;
+			UUID();
 			explicit UUID(uint64 id);
 			virtual ~UUID() = default;
 
-			uint64 GetID() const { return m_ID; }
+			uint64 GetID() const;
 
 			bool operator==(const UUID& other) const;
 			bool operator!=(const UUID& other) const;
