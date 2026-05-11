@@ -11,9 +11,7 @@
 template <typename T, uint32 Size>
 struct Vector
 {
-	T data[Size];
-
-	Vector() = default;
+	T data[Size]; 
 
 	Vector()
 	{
@@ -51,12 +49,12 @@ struct Vector
 		}
 	};
 
-	T Norm()
+	T Norm() const
 	{
 		return static_cast<T>(std::sqrt(NormSquared()));
 	}
 
-	T NormSquared()
+	T NormSquared() const
 	{
 		T sum = T(0);
 		for (uint32 i = 0; i < Size; ++i)
@@ -66,7 +64,7 @@ struct Vector
 		return sum;
 	};
 
-	float32 Dot(const Vector& other)
+	T Dot(const Vector& other) const
 	{
 		TNGINE_ASSERT(other.GetSize() == Size, "Vector sizes must match for dot product.");
 		T sum = T(0);
@@ -77,7 +75,7 @@ struct Vector
 		return sum;
 	};
 
-	float32 Scalar(Vector& other)
+	float32 Angle(const Vector& other) const
 	{
 		TNGINE_ASSERT(other.GetSize() == Size, "Vector sizes must match.");
 
@@ -88,6 +86,24 @@ struct Vector
 
 		return std::acos(static_cast<float32>(dot) / norms);
 	};
+
+	Vector Normalized()
+	{
+		T norm = Norm();
+		TNGINE_ASSERT(norm != T(0), "Cannot normalize zero-length vector.");
+		return *this / norm;
+	}
+
+	Vector Cross(const Vector& other) const
+	{
+		TNGINE_STATIC_ASSERT(Size == 3, "Cross product is only defined for 3D vectors.");
+		TNGINE_ASSERT(other.GetSize() == Size, "Vector sizes must match for cross product.");
+		Vector result;
+		result.data[0] = data[1] * other.data[2] - data[2] * other.data[1];
+		result.data[1] = data[2] * other.data[0] - data[0] * other.data[2];
+		result.data[2] = data[0] * other.data[1] - data[1] * other.data[0];
+		return result;
+	}
 
 	Vector& operator=(const Vector& other)
 	{
@@ -226,27 +242,20 @@ struct Vector
 		TNGINE_ASSERT(other.GetSize() == Size, "Vector sizes must match for element-wise multiplication.");
 		for (uint32 i = 0; i < Size; ++i)
 		{
+			TNGINE_ASSERT(other.data[i] != T(0), "Cannot divide by zero in element-wise division.");
 			data[i] /= other.data[i];
 		}
 		return *this;
 	}
 
-	Vector Normalize()
+	T& operator[](uint32 index)
 	{
-		T norm = Norm();
-		TNGINE_ASSERT(norm != T(0), "Cannot normalize zero-length vector.");
-		return *this / norm;
+		return data[index];
 	}
 
-	Vector Cross(const Vector& other) const
+	const T& operator[](uint32 index) const
 	{
-		TNGINE_ASSERT(Size == 3, "Cross product is only defined for 3D vectors.");
-		TNGINE_ASSERT(other.GetSize() == Size, "Vector sizes must match for cross product.");
-		Vector result;
-		result.data[0] = data[1] * other.data[2] - data[2] * other.data[1];
-		result.data[1] = data[2] * other.data[0] - data[0] * other.data[2];
-		result.data[2] = data[0] * other.data[1] - data[1] * other.data[0];
-		return result;
+		return data[index];
 	}
 
 private:

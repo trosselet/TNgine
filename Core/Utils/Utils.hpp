@@ -23,3 +23,5 @@
 			std::abort(); \
 		} \
 	} while (false)
+
+#define TNGINE_STATIC_ASSERT(condition, msg) static_assert(condition, "Static assertion failed: " msg)
