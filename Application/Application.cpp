@@ -16,16 +16,10 @@ namespace TNgine
 		Core::Log::Instance().Create();
 
 		DynArray<int32> arr(4, 42);
-		arr.Resize(6);
-		arr.PushBack(6);
-		arr.Reserve(12);
-		arr.Resize(2);
+		arr.Resize(8);
+		arr.Assign(2, 3, 40);
+		arr.Assign(2, {50, 25, 60});
 		
-		std::vector<int32> arr2(4, 42);
-		arr2.resize(2);
-		arr2.push_back(6);
-		arr2.reserve(12);
-		arr2.resize(2);
 
 	}
 	void Application::Run()

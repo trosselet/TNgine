@@ -1,6 +1,8 @@
 #ifndef DYN_ARRAY_H__INCLUDED
 #define DYN_ARRAY_H__INCLUDED
 
+#include <algorithm>
+
 #include "../define.h"
 #include "../Utils/Utils.hpp"
 
@@ -161,8 +163,58 @@ public:
 
 	void Assign(uint64 count, const T& value)
 	{
-		//TODO
+		if (count > m_size)
+			count = m_size;
+
+		for (uint64 i = 0; i < count; ++i)
+		{
+			mp_data[i] = value;
+		}
+
 	};
+
+	void Assign(std::initializer_list<T> list)
+	{
+		uint64 size = list.size();
+		if (size > m_size)
+			size = m_size;
+
+		uint64 index = 0;
+		for (auto l : list)
+		{
+			mp_data[index++] = l; 
+		}
+	}
+
+	void Assign(uint64 startIndex, uint64 count, const T& value)
+	{
+		uint64 newCount = startIndex + count;
+		TNGINE_ASSERT(startIndex <= m_size, "StartIndex must be in the range of the array"); 
+		if (newCount > m_size)
+		{
+			uint64 over = newCount - m_size;
+			newCount = m_size - over;
+		}
+
+		for (uint64 i = startIndex; i < newCount; ++i)
+		{
+			mp_data[i] = value;
+		}
+
+	};
+
+	void Assign(uint64 startIndex, std::initializer_list<T> list)
+	{
+		TNGINE_ASSERT(startIndex <= m_size, "StartIndex must be in the range of the array");
+		uint64 index = startIndex;
+		for (auto l : list)
+		{
+			if (index >= m_size)
+				break;
+
+			mp_data[index++] = l;
+		}
+	}
 
 private:
 	uint64 m_size = 0;
