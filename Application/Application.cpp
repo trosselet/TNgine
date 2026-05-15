@@ -4,53 +4,43 @@
 #include <Core/Utils/Utils.hpp>
 #include <Core/TMath.h>
 #include <Core/Containers/DynArray.hpp>
-#include <Core/Containers/HashMap.hpp>
+#include <Core/Containers/HashMap.hpp> 
+#include <Core/Utils/ProfileScope.hpp>
 
-
-#include <chrono>
-
-class Timer
-{
-public:
-	Timer(const std::string& name)
-		: m_name(name)
-	{
-		m_start = std::chrono::high_resolution_clock::now();
-	}
-
-	~Timer()
-	{
-		auto end = std::chrono::high_resolution_clock::now();
-
-		auto duration =
-			std::chrono::duration_cast<std::chrono::nanoseconds>(
-				end - m_start);
-
-		std::cout
-			<< m_name
-			<< " : "
-			<< duration.count()
-			<< " ms"
-			<< std::endl;
-	}
-
-private:
-	std::string m_name;
-
-	std::chrono::high_resolution_clock::time_point m_start;
-};
- 
 
 namespace TNgine
 {
 	void Application::Init()
 	{
 		Core::Log::Instance().Create();
+
+		
 	}
 
 	void Application::Run()
 	{
-		// Main application loop
+		while(true)
+		{
+			{
+				PROFILE_SCOPE("Renderer::Init");
+
+				PROFILE_TIMEPOINT("Buffers");
+
+				PROFILE_TIMEPOINT("Meshes");
+
+				PROFILE_TIMEPOINT("Shaders");
+			}
+
+			{
+				PROFILE_SCOPE("Gameplay::Init");
+
+				PROFILE_TIMEPOINT("Scripts");
+
+				PROFILE_TIMEPOINT("Movements");
+
+				PROFILE_TIMEPOINT("Tests");
+			}
+		}
 	}
 
 	void Application::ShutDown()
