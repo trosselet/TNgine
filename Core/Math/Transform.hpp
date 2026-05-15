@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_HPP__INCLUDED
 #define TRANSFORM_HPP__INCLUDED
 
-namespace MyNamespace
+namespace TNgine
 {
 	struct Transform
 	{

@@ -4,42 +4,48 @@
 #include <Core/Utils/Utils.hpp>
 #include <Core/TMath.h>
 #include <Core/Containers/DynArray.hpp>
+#include <Core/Containers/HashMap.hpp>
 
 
-#include <vector>
-#include <array>
+#include <chrono>
+
+class Timer
+{
+public:
+	Timer(const std::string& name)
+		: m_name(name)
+	{
+		m_start = std::chrono::high_resolution_clock::now();
+	}
+
+	~Timer()
+	{
+		auto end = std::chrono::high_resolution_clock::now();
+
+		auto duration =
+			std::chrono::duration_cast<std::chrono::nanoseconds>(
+				end - m_start);
+
+		std::cout
+			<< m_name
+			<< " : "
+			<< duration.count()
+			<< " ms"
+			<< std::endl;
+	}
+
+private:
+	std::string m_name;
+
+	std::chrono::high_resolution_clock::time_point m_start;
+};
+ 
 
 namespace TNgine
 {
 	void Application::Init()
 	{
 		Core::Log::Instance().Create();
-
-		DynArray<int32> arr(4, 42);
-		arr.Resize(8);
-		//arr.Assign(2, 3, 40);
-		//arr.Assign(2, {50, 25, 60});
-		
-		DynArray<int32> arr2;
-		bool empty = arr2.Empty();
-		arr2 = arr;
-		arr2.Erase(0);
-		arr2 = arr;
-		arr2.Erase(0, 2);
-		int32 r = arr2.PopBack();
-		int32 t = arr2.PopFront();
-		arr2.Swap(arr);
-		arr2.PushFront(0);
-		arr2.Insert(0, 5);
-		arr2.Insert(0, {5, 4, 2, 3});
-
-		for (auto number : arr2)
-		{
-			CLOG_INFO(std::to_string(number));
-		}
-
-		arr2.Clear();
-
 	}
 
 	void Application::Run()

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <!-- DynArray -->
+  <Type Name="TNgine::DynArray&lt;*&gt;">
+    <DisplayString>DynArray size={m_size}</DisplayString>
+
+    <Expand>
+      <Item Name="[size]">m_size</Item>
+      <Item Name="[capacity]">m_capacity</Item>
+
+      <ArrayItems>
+        <Size>m_size</Size>
+        <ValuePointer>mp_data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+
+  <!-- Pair -->
+  <Type Name="TNgine::Pair&lt;*,*&gt;">
+    <DisplayString>[{first}, {second}]</DisplayString>
+
+    <Expand>
+      <Item Name="key">first</Item>
+      <Item Name="value">second</Item>
+    </Expand>
+  </Type>
+
+
+  <!-- HashMap -->
+  <Type Name="TNgine::HashMap&lt;*,*&gt;">
+    <DisplayString>
+      HashMap size={m_size} buckets={m_buckets.m_size}
+    </DisplayString>
+
+    <Expand>
+
+      <Item Name="[size]">m_size</Item>
+      <Item Name="[bucket_count]">m_buckets.m_size</Item>
+      <Item Name="[load_factor]">
+        (float)m_size / (float)m_buckets.m_size
+      </Item>
+
+      <CustomListItems>
+
+        <Variable Name="bucket" InitialValue="0" />
+        <Variable Name="index" InitialValue="0" />
+
+        <Size>m_size</Size>
+
+        <Loop>
+
+          <If Condition="index &gt;= m_buckets.mp_data[bucket].m_size">
+            <Exec>bucket++</Exec>
+            <Exec>index = 0</Exec>
+          </If>
+
+          <If Condition="bucket &lt; m_buckets.m_size">
+
+            <Item>
+              m_buckets.mp_data[bucket].mp_data[index]
+            </Item>
+
+            <Exec>index++</Exec>
+
+          </If>
+
+        </Loop>
+
+      </CustomListItems>
+
+    </Expand>
+  </Type>
+
+</AutoVisualizer>
