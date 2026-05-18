@@ -18,7 +18,5 @@ int main(int argc, char** argv)
 
 	delete app;
 
-	AllocationTracker::Instance().DumpLeaks();
-
 	return 0;
 }

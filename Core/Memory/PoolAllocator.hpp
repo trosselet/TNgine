@@ -9,6 +9,9 @@
 class PoolAllocator
 {
 public:
+	PoolAllocator(const PoolAllocator&) = delete;
+	PoolAllocator& operator=(const PoolAllocator&) = delete;
+
 	PoolAllocator(uint64 elementSize, uint64 elementCount) : m_ElementCount(elementCount)
 	{
 		m_ElementSize = std::max<uint64>(elementSize, sizeof(FreeNode));
@@ -20,6 +23,43 @@ public:
 		InitializeFreeList();
 	}
 
+	PoolAllocator(PoolAllocator&& other) noexcept
+	{
+		mp_Memory				= other.mp_Memory;
+		mp_FreeList				= other.mp_FreeList;
+		m_ElementSize			= other.m_ElementSize;
+		m_ElementCount			= other.m_ElementCount;
+		m_TotalSize				= other.m_TotalSize;
+
+		other.mp_Memory			= nullptr;
+		other.mp_FreeList		= nullptr;
+		other.m_ElementSize		= 0;
+		other.m_ElementCount	= 0;
+		other.m_TotalSize		= 0;
+	}
+
+	PoolAllocator& operator=(PoolAllocator&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+
+		std::free(mp_Memory);
+
+		mp_Memory = other.mp_Memory;
+		mp_FreeList = other.mp_FreeList;
+		m_ElementSize = other.m_ElementSize;
+		m_ElementCount = other.m_ElementCount;
+		m_TotalSize = other.m_TotalSize;
+
+		other.mp_Memory = nullptr;
+		other.mp_FreeList = nullptr;
+		other.m_ElementSize = 0;
+		other.m_ElementCount = 0;
+		other.m_TotalSize = 0;
+
+		return *this;
+	}
+
 	virtual ~PoolAllocator()
 	{
 		std::free(mp_Memory);
@@ -27,6 +67,8 @@ public:
 
 	void* Allocate(uint64 size, const char* file, uint32 line)
 	{
+		TNGINE_ASSERT(size <= m_ElementSize, "Allocation too large for pool");
+
 		if (!mp_FreeList)
 		{
 			return nullptr;

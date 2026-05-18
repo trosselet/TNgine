@@ -46,24 +46,24 @@ public:
 
         if (m_Stats.CurrentAllocated > m_Stats.PeakAllocated)
         {
-            m_Stats.PeakAllocated =
-                m_Stats.CurrentAllocated;
+            m_Stats.PeakAllocated = m_Stats.CurrentAllocated;
         }
     }
 
     void Unregister(void* ptr)
     {
-        if (!m_Allocations.Contains(ptr))
+        AllocationInfo* info = m_Allocations.Find(ptr);
+
+        if (!info)
         {
             CLOG_ERROR("Double free detected {:p}", ptr);
             return;
         }
 
-        m_Stats.CurrentAllocated -= m_Allocations[ptr].Size;
-
+        m_Stats.CurrentAllocated -= info->Size;
         m_Stats.FreeCount++;
 
-		m_Allocations.Remove(ptr);
+        m_Allocations.Remove(ptr);
     }
 
     void DumpLeaks()

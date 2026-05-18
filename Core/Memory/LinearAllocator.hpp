@@ -7,11 +7,44 @@
 class LinearAllocator
 {
 public:
-    LinearAllocator(uint64 size) : m_Size(size), m_Offset(0)
+	LinearAllocator(const LinearAllocator&) = delete;
+	LinearAllocator& operator=(const LinearAllocator&) = delete;
+
+    LinearAllocator(uint64 size, const char* name = "") : m_Size(size), m_Offset(0)
     {
 		mp_Memory = std::malloc(size);
-		AllocationTracker::Instance().Register({ mp_Memory, size, "LinearAllocator", __FILE__, __LINE__ });
+		const char* allocatorName = name[0] ? name : "LinearAllocator";
+		AllocationTracker::Instance().Register({ mp_Memory, size, allocatorName, __FILE__, __LINE__});
     }
+
+	LinearAllocator(LinearAllocator&& other) noexcept
+	{
+		m_Size = other.m_Size;
+		m_Offset = other.m_Offset;
+		mp_Memory = other.mp_Memory;
+
+		other.mp_Memory = nullptr;
+		other.m_Size = 0;
+		other.m_Offset = 0;
+	}
+
+	LinearAllocator& operator=(LinearAllocator&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+
+		std::free(mp_Memory);
+
+		m_Size = other.m_Size;
+		m_Offset = other.m_Offset;
+		mp_Memory = other.mp_Memory;
+
+		other.mp_Memory = nullptr;
+		other.m_Size = 0;
+		other.m_Offset = 0;
+
+		return *this;
+	}
 
 	virtual ~LinearAllocator()
 	{
