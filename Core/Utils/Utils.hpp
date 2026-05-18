@@ -77,4 +77,10 @@
 
 #endif // TNGINE_ENABLE_PROFILING
 
+#define TALLOC(allocator, size) \
+    allocator.Allocate(size, __FILE__, __LINE__)
+
+#define TFREE(allocator, ptr) \
+    allocator.Free(ptr)
+
 #define CONSOLECLR system("cls");

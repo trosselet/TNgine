@@ -10,6 +10,10 @@
 #include <Core/Events/Events.h>
 #include <Core/Events/EventQueue.hpp>
 
+#include <Core/Memory/PoolAllocator.hpp>
+#include <Core/Memory/StackAllocator.hpp>
+#include <Core/Memory/LinearAllocator.hpp>
+
 namespace TNgine
 {
 	void Application::Init()
@@ -26,14 +30,16 @@ namespace TNgine
 
 	void Application::Run()
 	{
-		KeyPressEvent keyEvent{ 0, false };
-		EventQueue<KeyPressEvent> keyPressQueue;
-
-		keyPressQueue.PushEvent(keyEvent);
-		keyPressQueue.Subscribe(OnKeyPressed);
+		//KeyPressEvent keyEvent{ 0, false };
+		//EventQueue<KeyPressEvent> keyPressQueue;
+		//keyPressQueue.PushEvent(keyEvent);
+		//keyPressQueue.Subscribe(OnKeyPressed);
+		//keyPressQueue.Dispatch();
 		
+		LinearAllocator allocator(4096 * 4096);
+		int* x = static_cast<int*>(TALLOC(allocator, sizeof(int)));
 
-		while(true)
+		//while(true)
 		{
 			//{
 			//	PROFILE_SCOPE("Renderer::Init");
@@ -55,7 +61,6 @@ namespace TNgine
 			//	PROFILE_TIMEPOINT("Tests");
 			//}
 
-			keyPressQueue.Dispatch();
 			//CONSOLECLR;
 		}
 	}
@@ -63,5 +68,31 @@ namespace TNgine
 	void Application::ShutDown()
 	{
 		// Clean up resources and shut down the application
+		int test = 0;
+
+		//while (true)
+		{
+			//{
+			//	PROFILE_SCOPE("Renderer::Init");
+			//
+			//	PROFILE_TIMEPOINT("Buffers");
+			//
+			//	PROFILE_TIMEPOINT("Meshes");
+			//
+			//	PROFILE_TIMEPOINT("Shaders");
+			//}
+			//
+			//{
+			//	PROFILE_SCOPE("Gameplay::Init");
+			//
+			//	PROFILE_TIMEPOINT("Scripts");
+			//
+			//	PROFILE_TIMEPOINT("Movements");
+			//
+			//	PROFILE_TIMEPOINT("Tests");
+			//}
+
+			//CONSOLECLR;
+		}
 	}
 }

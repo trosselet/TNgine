@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Application.h"
+#include <Core/Memory/AllocatorTracker.hpp>
 
 TNgine::Application* CreateApplication()
 {
@@ -16,6 +17,8 @@ int main(int argc, char** argv)
 	app->ShutDown();
 
 	delete app;
+
+	AllocationTracker::Instance().DumpLeaks();
 
 	return 0;
 }

@@ -238,14 +238,25 @@ namespace TNgine
 
 		MappedType& operator[](const KeyType& key)
 		{
-			MappedType* value = Find(key);
+			uint64 bucketNumber = _BaseHash(key);
 
-			if (value)
-				return *value;
+			auto& bucket = m_buckets[bucketNumber];
 
-			Insert(key, MappedType{});
+			for (auto& pair : bucket)
+			{
+				if (pair.first == key)
+				{
+					return pair.second;
+				}
+			}
 
-			return *Find(key);
+			bucket.PushBack({ key, MappedType{} });
+
+			++m_size;
+
+			_CheckReHash();
+
+			return bucket.Back().second;
 		}
 
 	private:
