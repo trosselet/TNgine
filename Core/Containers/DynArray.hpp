@@ -197,7 +197,7 @@ namespace TNgine
 				pNew[i] = std::move(mp_data[i]);
 
 			if (size > m_size)
-				memset(pNew + copySize, 0, (size * sizeof(T)) - (m_size * sizeof(T)));
+				std::fill(pNew + copySize, pNew + size, T());
 
 			delete[] mp_data;
 
