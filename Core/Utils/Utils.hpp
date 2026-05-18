@@ -75,4 +75,6 @@
 #define PROFILE_SCOPE(name)
 #define PROFILE_TIMEPOINT(label)
 
-#endif
+#endif // TNGINE_ENABLE_PROFILING
+
+#define CONSOLECLR system("cls");

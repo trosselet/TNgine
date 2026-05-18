@@ -7,6 +7,8 @@
 #include <Core/Containers/HashMap.hpp> 
 #include <Core/Utils/ProfileScope.hpp>
 
+#include <Core/Events/Events.h>
+#include <Core/Events/EventQueue.hpp>
 
 namespace TNgine
 {
@@ -17,29 +19,44 @@ namespace TNgine
 		
 	}
 
+	void OnKeyPressed(const KeyPressEvent& e)
+	{
+		Core::Log::Instance().Info(LogTarget::CONSOLE_LOG, "Key Pressed: {0}, Repeat: {1}", e.keyCode, e.isRepeat);
+	}
+
 	void Application::Run()
 	{
+		KeyPressEvent keyEvent{ 0, false };
+		EventQueue<KeyPressEvent> keyPressQueue;
+
+		keyPressQueue.PushEvent(keyEvent);
+		keyPressQueue.Subscribe(OnKeyPressed);
+		
+
 		while(true)
 		{
-			{
-				PROFILE_SCOPE("Renderer::Init");
+			//{
+			//	PROFILE_SCOPE("Renderer::Init");
+			//
+			//	PROFILE_TIMEPOINT("Buffers");
+			//
+			//	PROFILE_TIMEPOINT("Meshes");
+			//
+			//	PROFILE_TIMEPOINT("Shaders");
+			//}
+			//
+			//{
+			//	PROFILE_SCOPE("Gameplay::Init");
+			//
+			//	PROFILE_TIMEPOINT("Scripts");
+			//
+			//	PROFILE_TIMEPOINT("Movements");
+			//
+			//	PROFILE_TIMEPOINT("Tests");
+			//}
 
-				PROFILE_TIMEPOINT("Buffers");
-
-				PROFILE_TIMEPOINT("Meshes");
-
-				PROFILE_TIMEPOINT("Shaders");
-			}
-
-			{
-				PROFILE_SCOPE("Gameplay::Init");
-
-				PROFILE_TIMEPOINT("Scripts");
-
-				PROFILE_TIMEPOINT("Movements");
-
-				PROFILE_TIMEPOINT("Tests");
-			}
+			keyPressQueue.Dispatch();
+			//CONSOLECLR;
 		}
 	}
 
