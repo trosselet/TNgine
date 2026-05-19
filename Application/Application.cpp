@@ -1,61 +1,61 @@
 #include "Application.h"
 
-#include <Core/include.h>
+#include <Platform/Input/Input.h>
 
 namespace TNgine
 {
+	static void OnKeyPressed(const KeyPressedEvent& e)
+	{
+		CLOG_INFO("Key Pressed: {} Repeat: {}", e.Key, e.Repeat);
+	}
+
+	static void OnWindowClose(const WindowCloseEvent&)
+	{
+		CLOG_WARN("Window Close Requested");
+	}
+
 	void Application::Init()
 	{
 		Core::Log::Instance().Create();
 
-		
-	}
+		mp_Window = AllocateObject<Window>(m_WindowAllocator, m_EventBus);
+		mp_Window->Create("TNgine", 1280, 720);
 
-	void OnKeyPressed(const KeyPressEvent& e)
-	{
-		Core::Log::Instance().Info(LogTarget::CONSOLE_LOG, "Key Pressed: {0}, Repeat: {1}", e.keyCode, e.isRepeat);
-	}
+		m_EventBus.KeyPressed.Subscribe(OnKeyPressed);
+		m_EventBus.WindowClose.Subscribe(OnWindowClose);
+
+		//mp_Window->SetVideoMode(true);
+
+		
+	} 
 
 	void Application::Run()
 	{
-		KeyPressEvent keyEvent{ 0, false };
-		EventQueue<KeyPressEvent> keyPressQueue;
-		keyPressQueue.PushEvent(keyEvent);
-		keyPressQueue.Subscribe(OnKeyPressed);
-		keyPressQueue.Dispatch();
-		
-		PoolAllocator poolAllocator(sizeof(LinearAllocator), 8);
-
-		LinearAllocator* pAllocator = AllocateObject<LinearAllocator>(poolAllocator, 1024 * 1024, "Main Linear Allocator");
-
-		int32* x = static_cast<int32*>(TALLOC((*pAllocator), sizeof(int32)));
-
-		//while(true)
+		while (mp_Window->ShouldClose() < 1)
 		{
-			//{
-			//	PROFILE_SCOPE("Renderer::Init");
-			//
-			//	PROFILE_TIMEPOINT("Buffers");
-			//
-			//	PROFILE_TIMEPOINT("Meshes");
-			//
-			//	PROFILE_TIMEPOINT("Shaders");
-			//}
-			//
-			//{
-			//	PROFILE_SCOPE("Gameplay::Init");
-			//
-			//	PROFILE_TIMEPOINT("Scripts");
-			//
-			//	PROFILE_TIMEPOINT("Movements");
-			//
-			//	PROFILE_TIMEPOINT("Tests");
-			//}
+			{			
+				mp_Window->PollEvents(); 
 
-			//CONSOLECLR;
+				m_EventBus.Dispatch(); 
+
+				if (Input::IsKeyDown(Key::F10))
+				{
+					mp_Window->SetVideoMode(WindowMode::Borderless);
+				}
+				if (Input::IsKeyDown(Key::F11))
+				{
+					mp_Window->SetVideoMode(WindowMode::Fullscreen);
+				}
+
+
+			} 
+
+
+
+			Input::Update();
+
 		}
 
-		FreeObject(poolAllocator, pAllocator);
 	}
 
 	void Application::ShutDown()

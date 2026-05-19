@@ -1,5 +1,10 @@
 #pragma once
 
+#define TNGINE_API_VULKAN
+//#define TNGINE_API_DIRECTX12
+//#define TNGINE_API_OPENGL
+
+
 #include "Application.h"
 #include <Core/Memory/AllocatorTracker.hpp>
 

@@ -1,8 +1,14 @@
 #ifndef APPLICATION_H__INCLUDED
 #define APPLICATION_H__INCLUDED
 
+#include <Core/include.h> 
+#include <Platform/Window/WindowFactory.hpp>
+
+
+
 namespace TNgine
 {
+
 	class Application
 	{
 	public:
@@ -11,6 +17,11 @@ namespace TNgine
 		void Init();
 		void Run();
 		void ShutDown();
+
+	private:
+		LinearAllocator m_WindowAllocator{ sizeof(Window), "Window Allocator" };
+		Window* mp_Window = nullptr;
+		EventBus m_EventBus;
 	};
 }
 

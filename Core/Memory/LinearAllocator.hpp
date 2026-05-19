@@ -7,6 +7,7 @@
 class LinearAllocator
 {
 public:
+	LinearAllocator() = default;
 	LinearAllocator(const LinearAllocator&) = delete;
 	LinearAllocator& operator=(const LinearAllocator&) = delete;
 
