@@ -13,26 +13,35 @@ namespace TNgine
         using EventType = T;
         using Callback = void(*)(const EventType&);
 
+        struct Subscriber
+        {
+            uint64 Id;
+            Callback Function;
+        };
+
     public:
 
-        void PushEvent(const EventType& event)
+        void Push(const T& event)
         {
             m_Events.PushBack(event);
         }
 
-        Callback Subscribe(Callback callback)
+        uint64 Subscribe(Callback callback)
         {
-            m_Callbacks.PushBack(callback);
-            return callback;
+            uint64 id = m_NextId++;
+
+            m_Subscribers.PushBack({ id, callback });
+
+            return id;
         }
 
-        void Unsubscribe(Callback callback)
+        void Unsubscribe(uint64 id)
         {
-            for (uint64 i = 0; i < m_Callbacks.Size(); ++i)
+            for (uint64 i = 0; i < m_Subscribers.Size(); ++i)
             {
-                if (m_Callbacks[i] == callback)
+                if (m_Subscribers[i].Id == id)
                 {
-                    m_Callbacks.Erase(i);
+                    m_Subscribers.Erase(i);
                     return;
                 }
             }
@@ -42,9 +51,9 @@ namespace TNgine
         {
             for (const auto& event : m_Events)
             {
-                for (const auto& callback : m_Callbacks)
+                for (const auto& subscriber : m_Subscribers)
                 {
-                    callback(event);
+                    subscriber.Function(event);
                 }
             }
 
@@ -53,8 +62,10 @@ namespace TNgine
 
     private:
 
-        DynArray<EventType> m_Events;
-        DynArray<Callback> m_Callbacks;
+        uint64 m_NextId = 1;
+
+        DynArray<T> m_Events;
+        DynArray<Subscriber> m_Subscribers;
     };
 }
 

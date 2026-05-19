@@ -9,6 +9,7 @@
 #include "Utils/ProfileScope.hpp"
 
 #include "Events/EventQueue.hpp"
+#include "Events/EventBus.hpp"
 #include "Events/Events.h"
 
 #include "Memory/PoolAllocator.hpp"
