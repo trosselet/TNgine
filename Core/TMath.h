@@ -16,4 +16,6 @@ namespace TNgine
 	using Matrix2x2 = Matrix<float32, 2, 2>;
 	using Matrix3x3 = Matrix<float32, 3, 3>;
 	using Matrix4x4 = Matrix<float32, 4, 4>;
+
+	constexpr float32 PI = 3.14159265358979323846;
 }

@@ -1,8 +1,6 @@
 #ifndef WINDOW_FACTORY_H__INCLUDED
 #define WINDOW_FACTORY_H__INCLUDED
 
-#define TNGINE_WINDOW_GLFW
-
 #include "IWindow.h"
 #include "GLFW/GLFWWindow.h"
 

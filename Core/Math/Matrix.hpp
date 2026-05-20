@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "../define.h"
+#include "../PrimitivesTypes.h"
 #include "../Utils/Utils.hpp"
 
 template<typename T, uint32 Rows, uint32 Cols>

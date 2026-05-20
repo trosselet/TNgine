@@ -23,10 +23,6 @@ namespace TNgine
 
 		m_EventBus.KeyPressed.Subscribe(OnKeyPressed);
 		m_EventBus.WindowClose.Subscribe(OnWindowClose);
-
-		//mp_Window->SetVideoMode(true);
-
-		
 	} 
 
 	void Application::Run()
