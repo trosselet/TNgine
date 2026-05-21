@@ -208,7 +208,7 @@ namespace TNgine
 
 		void Reserve(const uint64 newCapacity)
 		{
-			if (newCapacity <= m_size)
+			if (newCapacity <= m_capacity)
 				return;
 
 			T* pNew = new T[newCapacity];
@@ -228,7 +228,7 @@ namespace TNgine
 		{
 			if (m_size >= m_capacity)
 			{
-				uint64 newCapacity = (m_capacity == 0) ? 1 : m_capacity * 1.5f;
+				uint64 newCapacity = (m_capacity == 0) ? 1 : m_capacity * 2;
 				Reserve(newCapacity);
 			}
 
@@ -242,7 +242,7 @@ namespace TNgine
 		{
 			if (m_size >= m_capacity)
 			{
-				uint64 newCapacity = (m_capacity == 0) ? 1 : m_capacity * 1.5f;
+				uint64 newCapacity = (m_capacity == 0) ? 1 : m_capacity * 2;
 				Reserve(newCapacity);
 			}
 			m_size++;

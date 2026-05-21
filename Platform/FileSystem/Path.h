@@ -13,7 +13,7 @@ namespace TNgine
 		{
 		public:
 
-			Path();
+			Path() = default;
 			Path(const char* path);
 			Path(const std::string& path);
 
@@ -33,6 +33,8 @@ namespace TNgine
 
 			Path Relative(const Path& base) const;
 
+			Path LexicallyRelative(const Path& base) const;
+
 			bool IsAbsolute() const;
 
 			bool IsRelative() const;
@@ -42,6 +44,8 @@ namespace TNgine
 			bool HasExtension() const;
 
 			bool Empty() const;
+
+			bool StartsWith(const Path& prefix) const;
 
 			Path& operator=(const char* path)
 			{
@@ -69,6 +73,18 @@ namespace TNgine
 			std::filesystem::path m_Path;
 		};
 	}
+}
+
+namespace std
+{
+	template<>
+	struct hash<TNgine::FileSystem::Path>
+	{
+		size_t operator()(const TNgine::FileSystem::Path& path) const
+		{
+			return hash<std::string>{}(path.Normalize().String());
+		}
+	};
 }
 
 #endif // !PATH_H__INCLUDED

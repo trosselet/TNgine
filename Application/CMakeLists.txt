@@ -46,4 +46,18 @@ if(ENGINE_ENABLE_D3D12)
     )
 endif()
 
+# =========================================================
+# Assets
+# =========================================================
+
+set(ASSETS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Content/Assets")
+set(ASSETS_OUTPUT_DIR "$<TARGET_FILE_DIR:Application>/Assets")
+
+add_custom_command(TARGET Application POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+            "${ASSETS_SOURCE_DIR}"
+            "${ASSETS_OUTPUT_DIR}"
+    COMMENT "Copying assets..."
+)
+
 set_project_warnings(Application)

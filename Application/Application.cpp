@@ -1,7 +1,7 @@
 #include "Application.h"
 
 #include <Platform/Input/Input.h>
-#include <Platform/FileSystem/File.h>
+#include <Platform/FileSystem/VirtualFileSystem.h>
 
 namespace TNgine
 {
@@ -24,6 +24,27 @@ namespace TNgine
 
 		m_EventBus.KeyPressed.Subscribe(OnKeyPressed);
 		m_EventBus.WindowClose.Subscribe(OnWindowClose);
+
+		FileSystem::VirtualFileSystem vfs;
+
+		vfs.Mount("Textures://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Textures/"));
+		vfs.Mount("Models://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Models/"));
+		vfs.Mount("Audio://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Audio/"));
+
+		{
+			auto handle = vfs.Open("Textures://dwall.jpg", FileSystem::FileMode::Read);
+			if (handle != nullptr)
+			{
+				DynArray<byte> buffer(handle->Size());
+				handle->Read(buffer.Data(), buffer.Size());
+				CLOG_INFO("Read {} bytes from dwall.jpg", buffer.Size());
+			}
+			else
+			{
+				CLOG_ERROR("Failed to open dwall.jpg");
+			}
+		}
+
 	} 
 
 	void Application::Run()

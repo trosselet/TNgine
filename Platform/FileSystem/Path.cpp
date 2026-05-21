@@ -1,8 +1,4 @@
-#include "Path.h"
-
-TNgine::FileSystem::Path::Path() : m_Path()
-{
-}
+#include "Path.h" 
 
 TNgine::FileSystem::Path::Path(const char* path) : m_Path(path)
 {
@@ -30,6 +26,11 @@ std::string TNgine::FileSystem::Path::Filename() const
 std::string TNgine::FileSystem::Path::Extension() const
 {
 	return m_Path.extension().generic_string();
+}
+
+TNgine::FileSystem::Path TNgine::FileSystem::Path::LexicallyRelative(const Path& base) const
+{
+	return Path(m_Path.lexically_relative(base.m_Path).generic_string());
 }
 
 bool TNgine::FileSystem::Path::IsAbsolute() const
@@ -79,4 +80,13 @@ TNgine::FileSystem::Path TNgine::FileSystem::Path::Absolute() const
 TNgine::FileSystem::Path TNgine::FileSystem::Path::Relative(const Path& base) const
 {
 	return Path(std::filesystem::relative(m_Path, base.m_Path).generic_string());
+}
+
+bool TNgine::FileSystem::Path::StartsWith(const Path& prefix) const
+{
+	std::string thisPath = Normalize().String();
+	std::string otherPath = prefix.Normalize().String();
+
+
+	return thisPath.starts_with(otherPath);
 }
