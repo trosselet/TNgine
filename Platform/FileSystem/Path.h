@@ -7,61 +7,68 @@
 
 namespace TNgine
 {
-	class Path
+	namespace FileSystem
 	{
-	public:
-
-		Path();
-		Path(const char* path);
-		Path(const std::string& path);
-
-		std::string String() const;
-
-		Path Parent() const;
-
-		Path Filename() const;
-
-		Path Extension() const;
-
-		Path Normalize() const;
-
-		Path Stem() const;
-
-		Path Absolute() const;
-
-		Path Relative(const Path& base) const;
-
-		bool IsAbsolute() const;
-
-		bool Exists() const;
-
-		bool HasExtension() const; 
-
-		Path& operator=(const char* path)
+		class Path
 		{
-			m_Path = path;
-			return *this;
-		}
+		public:
 
-		Path operator/(const Path& other) const
-		{
-			return Path((m_Path / other.m_Path).generic_string());
-		}
+			Path();
+			Path(const char* path);
+			Path(const std::string& path);
 
-		bool operator==(const Path& other) const
-		{
-			return Normalize().String() == other.Normalize().String();
-		}
+			std::string String() const;
 
-		bool operator!=(const Path& other) const
-		{
-			return !(*this == other);
-		}
+			Path Parent() const;
 
-	private:
+			std::string Filename() const;
 
-		std::filesystem::path m_Path;
-	};
+			std::string Extension() const;
+
+			Path Normalize() const;
+
+			std::string Stem() const;
+
+			Path Absolute() const;
+
+			Path Relative(const Path& base) const;
+
+			bool IsAbsolute() const;
+
+			bool IsRelative() const;
+
+			bool Exists() const;
+
+			bool HasExtension() const;
+
+			bool Empty() const;
+
+			Path& operator=(const char* path)
+			{
+				m_Path = path;
+				return *this;
+			}
+
+			Path operator/(const Path& other) const
+			{
+				return Path((m_Path / other.m_Path).generic_string());
+			}
+
+			bool operator==(const Path& other) const
+			{
+				return Normalize().String() == other.Normalize().String();
+			}
+
+			bool operator!=(const Path& other) const
+			{
+				return !(*this == other);
+			}
+
+		private:
+
+			std::filesystem::path m_Path;
+		};
+	}
 }
 
 #endif // !PATH_H__INCLUDED

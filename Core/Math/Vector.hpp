@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "../define.h"
+#include "../PrimitivesTypes.h"
 #include "../Utils/Utils.hpp"
 
 

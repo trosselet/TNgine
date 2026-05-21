@@ -1,7 +1,7 @@
 #ifndef UUID_H__INCLUDED
 #define UUID_H__INCLUDED
 
-#include "../define.h"
+#include "../PrimitivesTypes.h"
 
 namespace TNgine
 {
