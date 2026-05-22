@@ -14,6 +14,8 @@ namespace TNgine
 		{
 		public:
 
+			static VirtualFileSystem& Instance();
+
 			void Mount(const Path& virtualPath, std::shared_ptr<IVirtualProvider> provider);
 
 			bool Exists(const Path& path);

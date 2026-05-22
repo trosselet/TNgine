@@ -1,5 +1,11 @@
 #include "VirtualFileSystem.h"
 
+TNgine::FileSystem::VirtualFileSystem& TNgine::FileSystem::VirtualFileSystem::Instance()
+{
+	static VirtualFileSystem instance;
+	return instance;
+}
+
 void TNgine::FileSystem::VirtualFileSystem::Mount(const TNgine::FileSystem::Path& virtualPath, std::shared_ptr<TNgine::FileSystem::IVirtualProvider> provider)
 {
 	MountPoint mountPoint;

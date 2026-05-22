@@ -2,6 +2,7 @@
 
 #include <Platform/Input/Input.h>
 #include <Platform/FileSystem/VirtualFileSystem.h>
+#include <Platform/FileWatcher/FileWatcher.h>
 
 namespace TNgine
 {
@@ -23,16 +24,14 @@ namespace TNgine
 		mp_Window->Create("TNgine", 1280, 720);
 
 		m_EventBus.KeyPressed.Subscribe(OnKeyPressed);
-		m_EventBus.WindowClose.Subscribe(OnWindowClose);
+		m_EventBus.WindowClose.Subscribe(OnWindowClose); 
 
-		FileSystem::VirtualFileSystem vfs;
-
-		vfs.Mount("Textures://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Textures/"));
-		vfs.Mount("Models://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Models/"));
-		vfs.Mount("Audio://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Audio/"));
+		FileSystem::VirtualFileSystem::Instance().Mount("Textures://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Textures/"));
+		FileSystem::VirtualFileSystem::Instance().Mount("Models://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Models/"));
+		FileSystem::VirtualFileSystem::Instance().Mount("Audio://", std::make_shared<FileSystem::DiskFileProvider>("Assets/Audio/"));
 
 		{
-			auto handle = vfs.Open("Textures://dwall.jpg", FileSystem::FileMode::Read);
+			auto handle = FileSystem::VirtualFileSystem::Instance().Open("Textures://dwall.jpg", FileSystem::FileMode::Read);
 			if (handle != nullptr)
 			{
 				DynArray<byte> buffer(handle->Size());
@@ -44,6 +43,8 @@ namespace TNgine
 				CLOG_ERROR("Failed to open dwall.jpg");
 			}
 		}
+
+		FileSystem::FileWatcher::Instance().Watch("Assets/");
 
 	} 
 
@@ -65,7 +66,7 @@ namespace TNgine
 					mp_Window->SetVideoMode(WindowMode::Fullscreen);
 				}
 
-
+				WatcherUpdate();
 			} 
 
 
@@ -79,5 +80,39 @@ namespace TNgine
 	void Application::ShutDown()
 	{
 		// Clean up resources and shut down the application
+	}
+
+	void Application::WatcherUpdate()
+	{
+		FileSystem::FileWatcher::Instance().Poll();
+
+
+		FileSystem::FileChangeEvent e;
+
+		while (FileSystem::FileWatcher::Instance().PopEvent(e))
+		{
+			switch (e.Action)
+			{
+			case FileSystem::FileAction::Added:
+
+				CLOG_INFO("Added: {}", e.FilePath.String());
+				break;
+
+			case FileSystem::FileAction::Removed:
+
+				CLOG_INFO("Removed: {}", e.FilePath.String());
+				break;
+
+			case FileSystem::FileAction::Modified:
+
+				CLOG_INFO("Modified: {}", e.FilePath.String());
+				break;
+
+			case FileSystem::FileAction::Renamed:
+
+				CLOG_INFO("Renamed: {}", e.FilePath.String());
+				break;
+			}
+		}
 	}
 }

@@ -19,6 +19,9 @@ namespace TNgine
 		void ShutDown();
 
 	private:
+		void WatcherUpdate();
+
+	private:
 		LinearAllocator m_WindowAllocator{ sizeof(Window), "Window Allocator" };
 		Window* mp_Window = nullptr;
 		EventBus m_EventBus;
