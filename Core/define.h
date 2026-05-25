@@ -13,13 +13,7 @@
 #elif
 	#error "Unsupported platform!"
 
-#endif // OS
-/*--------------------------------------*/
-
-/*-------------Graphic API--------------*/
-#define TNGINE_API_VULKAN
-//#define TNGINE_API_DIRECTX12
-//#define TNGINE_API_OPENGL
+#endif
 /*--------------------------------------*/
 
 /*-------------Windowing API------------*/
