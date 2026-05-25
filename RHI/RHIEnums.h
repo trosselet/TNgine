@@ -3,127 +3,164 @@
 
 namespace TNgine
 {
-	enum class Backend
-	{
-		DirectX12,
-		Vulkan,
-		OpenGL
-	};
+    enum class Backend
+    {
+        Vulkan,
+        OpenGL,
+        DirectX12
+    };
 
-	enum class ShaderStage
-	{
-		Vertex,
-		Fragment,
-		Compute,
-		Geometry,
-		TessControl,
-		TessEvaluation
-	};
+    enum class ShaderStage : uint32
+    {
+        None = 0,
 
-	enum class BufferUsage
-	{
-		Vertex,
-		Index,
-		Uniform,
-		Storage,
-		Staging,
-		Indirect
-	};
+        Vertex = 1 << 0,
+        Fragment = 1 << 1,
+        Compute = 1 << 2,
+        Geometry = 1 << 3,
+        TessControl = 1 << 4,
+        TessEvaluation = 1 << 5
+    };
 
-	enum class TextureUsage
-	{
-		Sampled,
-		Storage,
-		RenderTarget,
-		DepthStencil,
-		TransferSrc,
-		TransferDst
-	};
+    enum class BufferUsage : uint32
+    {
+        None = 0,
 
-	enum class MemoryUsage
-	{
-		CPUOnly,
-		GPUOnly,
-		CPUToGPU,
-		GPUToCPU
-	};
+        Vertex = 1 << 0,
+        Index = 1 << 1,
+        Uniform = 1 << 2,
+        Storage = 1 << 3,
+        Staging = 1 << 4,
+        Indirect = 1 << 5,
 
-	enum class PrimitiveTopology
-	{
-		TriangleList,
-		TriangleStrip,
-		LineList,
-		LineStrip,
-		PointList
-	};
+        TransferSrc = 1 << 6,
+        TransferDst = 1 << 7
+    };
 
-	enum class PolygonMode
-	{
-		Fill,
-		Line,
-		Point
-	};
+    enum class TextureUsage : uint32
+    {
+        None = 0,
 
-	enum class CullMode
-	{
-		None,
-		Front,
-		Back
-	};
+        Sampled = 1 << 0,
+        Storage = 1 << 1,
+        RenderTarget = 1 << 2,
+        DepthStencil = 1 << 3,
 
-	enum class FrontFace
-	{
-		ClockWise,
-		CounterClockWise
-	};
+        TransferSrc = 1 << 4,
+        TransferDst = 1 << 5
+    };
 
-	enum class CompareOP
-	{
-		Never,
-		Less,
-		Equal,
-		LessEqual,
-		Greater,
-		NotEqual,
-		GreaterEqual,
-		Always
-	};
+    enum class MemoryUsage
+    {
+        CPUOnly,
+        GPUOnly,
+        CPUToGPU,
+        GPUToCPU
+    };
 
-	enum class BlendFactor
-	{
-		Zero,
-		One,
-		SrcColor,
-		OneMinusSrcColor,
-		DstColor,
-		OneMinusDstColor,
-		SrcAlpha,
-		OneMinusSrcAlpha
-	};
+    enum class PrimitiveTopology
+    {
+        TriangleList,
+        TriangleStrip,
 
-	enum class QueueType
-	{
-		Graphic,
-		Compute,
-		Transfer
-	};
+        LineList,
+        LineStrip,
 
-	enum class ResourceState
-	{
-		Undefined,
+        PointList
+    };
 
-		RenderTarget,
-		DepthWrite,
-		DepthRead,
+    enum class PolygonMode
+    {
+        Fill,
+        Line,
+        Point
+    };
 
-		ShaderRead,
-		ShaderWrite,
+    enum class CullMode
+    {
+        None,
+        Front,
+        Back
+    };
 
-		CopySrc,
-		CopyDst,
+    enum class FrontFace
+    {
+        ClockWise,
+        CounterClockWise
+    };
 
-		Present
-	};
+    enum class CompareOp
+    {
+        Never,
+        Less,
+        Equal,
+        LessEqual,
+        Greater,
+        NotEqual,
+        GreaterEqual,
+        Always
+    };
+
+    enum class BlendFactor
+    {
+        Zero,
+        One,
+
+        SrcColor,
+        OneMinusSrcColor,
+
+        DstColor,
+        OneMinusDstColor,
+
+        SrcAlpha,
+        OneMinusSrcAlpha
+    };
+
+    enum class QueueType
+    {
+        Graphics,
+        Compute,
+        Transfer
+    };
+
+    enum class ResourceState
+    {
+        Undefined,
+
+        RenderTarget,
+
+        DepthWrite,
+        DepthRead,
+
+        ShaderRead,
+        ShaderWrite,
+
+        CopySrc,
+        CopyDst,
+
+        Present
+    };
+
+    enum class Filter
+    {
+        Nearest,
+        Linear
+    };
+
+    enum class MipmapMode
+    {
+        Nearest,
+        Linear
+    };
+
+    enum class AddressMode
+    {
+        Repeat,
+        MirroredRepeat,
+
+        ClampToEdge,
+        ClampToBorder
+    };
 }
 
-#endif // !RHI_ENUMS_H__INCLUDED
+#endif

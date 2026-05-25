@@ -1,6 +1,8 @@
 #ifndef RHI_FORMATS_H__INCLUDED
 #define RHI_FORMATS_H__INCLUDED
 
+#include <Core/include.h>
+
 namespace TNgine
 {
     enum class RHIFormat
@@ -35,5 +37,4 @@ namespace TNgine
     };
 }
 
-
-#endif // !RHI_FORMATS_H__INCLUDED
+#endif

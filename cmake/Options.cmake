@@ -28,7 +28,6 @@ option(ENGINE_ENABLE_LOGGING "Enable logging system" ON)
 # =========================================================
 
 option(ENGINE_ENABLE_LTO "Enable link time optimization" OFF)
-option(ENGINE_ENABLE_UNITY_BUILD "Enable unity builds" OFF)
 option(ENGINE_ENABLE_PCH "Enable precompiled headers" ON)
 
 # =========================================================
@@ -132,15 +131,5 @@ if(ENGINE_ENABLE_LTO)
     if(supported)
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
     endif()
-
-endif()
-
-# =========================================================
-# Unity Build
-# =========================================================
-
-if(ENGINE_ENABLE_UNITY_BUILD)
-
-    set(CMAKE_UNITY_BUILD ON)
 
 endif()
