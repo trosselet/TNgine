@@ -1,6 +1,8 @@
 #ifndef RHI_ENUMS_H__INCLUDED
 #define RHI_ENUMS_H__INCLUDED
 
+#include <Core/include.h>
+
 namespace TNgine
 {
     enum class Backend
