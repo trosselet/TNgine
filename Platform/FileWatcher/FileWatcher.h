@@ -6,6 +6,9 @@
 #include "LinFileWatcher.h"
 #include "MacFileWatcher.h"
 
+#include <Core/Threads/Atomic.h>
+#include <Core/Threads/Thread.h>
+
 namespace TNgine
 {
 	namespace FileSystem
@@ -26,10 +29,20 @@ namespace TNgine
 			~FileWatcher() = default;
 			void Watch(const Path& path);
 			void Unwatch(const Path& path);
-			void Poll();
 			bool PopEvent(FileChangeEvent& event);
+
+			void Start();
+			void Stop();
+
+		private:
+			void Poll();
+			void WatchLoop();
+
 		private:
 			Watcher m_Watcher;
+
+			TNgine::Thread m_Thread;
+			TNgine::Atomic<bool> m_Running = false;
 		};
 	}
 }

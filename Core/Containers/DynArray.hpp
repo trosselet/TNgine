@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "../define.h"
+#include "../PrimitivesTypes.h"
 #include "../Utils/Utils.hpp"
 
 namespace TNgine
@@ -26,7 +27,7 @@ namespace TNgine
 			return *this;
 		}
 
-		DynArrayIterator operator++(int)
+		DynArrayIterator operator++(int32)
 		{
 			DynArrayIterator iterator = *this;
 			++(*this);
@@ -39,14 +40,14 @@ namespace TNgine
 			return *this;
 		}
 
-		DynArrayIterator operator--(int)
+		DynArrayIterator operator--(int32)
 		{
 			DynArrayIterator iterator = *this;
 			--(*this);
 			return iterator;
 		}
 
-		ReferenceType operator[](int index)
+		ReferenceType operator[](int32 index)
 		{
 			return *(m_ptr + index);
 		}
@@ -96,17 +97,18 @@ namespace TNgine
 			delete[] mp_data;
 		};
 
-		DynArray(const DynArray& other)
+		DynArray(const DynArray& other) requires std::is_copy_constructible_v<T>
 		{
 			m_size = other.m_size;
 			m_capacity = other.m_capacity;
 
-			mp_data = new T[other.m_size];
-			for (uint32 i = 0; i < m_size; ++i)
+			mp_data = new T[m_capacity];
+
+			for (uint64 i = 0; i < m_size; ++i)
 			{
 				mp_data[i] = other.mp_data[i];
 			}
-		};
+		}
 
 		DynArray(DynArray&& other) noexcept
 		{
@@ -237,6 +239,18 @@ namespace TNgine
 
 			return;
 		};
+
+		void PushBack(T&& value)
+		{
+			if (m_size >= m_capacity)
+			{
+				uint64 newCapacity = (m_capacity == 0) ? 1 : m_capacity * 2;
+				Reserve(newCapacity);
+			}
+
+			mp_data[m_size] = std::move(value);
+			++m_size;
+		}
 
 		void PushFront(const T& value)
 		{
@@ -536,6 +550,24 @@ namespace TNgine
 
 			for (uint64 i = 0; i < m_size; ++i)
 				mp_data[i] = other.mp_data[i];
+
+			return *this;
+		}
+
+		DynArray& operator=(DynArray&& other) noexcept
+		{
+			if (this == &other)
+				return *this;
+
+			delete[] mp_data;
+
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+			mp_data = other.mp_data;
+
+			other.m_size = 0;
+			other.m_capacity = 0;
+			other.mp_data = nullptr;
 
 			return *this;
 		}

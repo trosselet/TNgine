@@ -45,7 +45,9 @@ namespace TNgine
 		}
 
 		FileSystem::FileWatcher::Instance().Watch("Assets/");
+		FileSystem::FileWatcher::Instance().Start();
 
+		JobSystem::Init(ThreadUtils::GetHardwareThreadCount());
 	} 
 
 	void Application::Run()
@@ -79,14 +81,13 @@ namespace TNgine
 
 	void Application::ShutDown()
 	{
-		// Clean up resources and shut down the application
+		FileSystem::FileWatcher::Instance().Stop();
+		JobSystem::Wait();
+		JobSystem::Shutdown();
 	}
 
 	void Application::WatcherUpdate()
 	{
-		FileSystem::FileWatcher::Instance().Poll();
-
-
 		FileSystem::FileChangeEvent e;
 
 		while (FileSystem::FileWatcher::Instance().PopEvent(e))

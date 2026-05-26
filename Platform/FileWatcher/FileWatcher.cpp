@@ -25,3 +25,43 @@ bool TNgine::FileSystem::FileWatcher::PopEvent(FileChangeEvent& event)
 {
 	return m_Watcher.PopEvent(event);
 }
+
+void TNgine::FileSystem::FileWatcher::Start()
+{
+    if (m_Running)
+    {
+        return;
+    }
+
+    m_Running = true;
+
+    m_Thread = Thread([this]()
+    {
+        WatchLoop();
+    });
+}
+
+void TNgine::FileSystem::FileWatcher::Stop()
+{
+    m_Running = false;
+
+#ifdef TNGINE_OS_WINDOWS
+    for (auto& watch : m_Watcher.GetWatchedEntries())
+    {
+        CancelIoEx(watch.DirectoryHandle, nullptr);
+    }
+#endif
+
+    if (m_Thread.Joinable())
+    {
+        m_Thread.Join();
+    }
+}
+
+void TNgine::FileSystem::FileWatcher::WatchLoop()
+{
+    while (m_Running)
+    {
+        Poll(); 
+    }
+}

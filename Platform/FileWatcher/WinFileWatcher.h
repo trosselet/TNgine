@@ -17,13 +17,6 @@ namespace TNgine
 	{
 		class WinFileWatcher : public IFileWatcher
 		{
-		public:
-			WinFileWatcher();
-			virtual ~WinFileWatcher();
-			virtual void Watch(const Path& path) override;
-			virtual void Unwatch(const Path& path) override;
-			virtual void Poll() override;
-			virtual bool PopEvent(FileChangeEvent& event) override;
 		private:
 
 			struct WatchedEntry
@@ -32,6 +25,16 @@ namespace TNgine
 				Path Directory; 
 				byte Buffer[4096];
 			};
+
+		public:
+			WinFileWatcher();
+			virtual ~WinFileWatcher();
+			virtual void Watch(const Path& path) override;
+			virtual void Unwatch(const Path& path) override;
+			virtual void Poll() override;
+			virtual bool PopEvent(FileChangeEvent& event) override;
+
+			DynArray<WatchedEntry>& GetWatchedEntries() { return m_Watches; }
 
 		private:
 

@@ -18,6 +18,9 @@
 
 #include "UUID/UUID.h"
 
+#include "Threads/JobSystem.h"
+#include "Threads/ThreadUtils.hpp"
+
 template<typename T, typename Allocator, typename... Args>
 T* AllocateObject(Allocator& allocator, Args&&... args)
 {
