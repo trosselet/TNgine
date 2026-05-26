@@ -210,9 +210,9 @@ bool TNgine::GLFWWindow::SetVideoMode(WindowMode mode)
 
 			glfwGetMonitorPos( monitor, &monitorX, &monitorY );
 
-			glfwSetWindowMonitor( mp_Window, nullptr, monitorX, monitorY, videoMode->width, videoMode->height, 0 );
-
 			glfwSetWindowAttrib( mp_Window, GLFW_DECORATED, GLFW_FALSE );
+
+			glfwSetWindowMonitor( mp_Window, nullptr, monitorX, monitorY, videoMode->width, videoMode->height, 0 );
 
 			break;
 		}

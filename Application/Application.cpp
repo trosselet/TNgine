@@ -57,11 +57,11 @@ namespace TNgine
 
 				m_EventBus.Dispatch(); 
 
-				if (Input::IsKeyDown(Key::F10))
+				if (Input::IsKeyPressed(Key::F10))
 				{
 					mp_Window->SetVideoMode(WindowMode::Borderless);
 				}
-				if (Input::IsKeyDown(Key::F11))
+				if (Input::IsKeyPressed(Key::F11))
 				{
 					mp_Window->SetVideoMode(WindowMode::Fullscreen);
 				}
