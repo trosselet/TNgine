@@ -163,6 +163,23 @@ namespace TNgine
         ClampToEdge,
         ClampToBorder
     };
+
+    enum class DescriptorType
+    {
+        UniformBuffer,
+        StorageBuffer,
+
+        SampledTexture,
+        StorageTexture,
+
+        Sampler
+    };
+
+    enum class BarrierType
+    {
+        Buffer,
+        Texture
+    };
 }
 
 #endif
