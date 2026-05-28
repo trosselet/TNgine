@@ -4,6 +4,8 @@
 #include <Platform/FileSystem/VirtualFileSystem.h>
 #include <Platform/FileWatcher/FileWatcher.h>
 
+#include <Backends/Vulkan/VulkanBaseCode.h>
+
 namespace TNgine
 {
 	static void OnKeyPressed(const KeyPressedEvent& e)
@@ -48,6 +50,10 @@ namespace TNgine
 		FileSystem::FileWatcher::Instance().Start();
 
 		JobSystem::Init(ThreadUtils::GetHardwareThreadCount());
+
+		VulkanInit init;
+		init.Init();
+
 	} 
 
 	void Application::Run()
