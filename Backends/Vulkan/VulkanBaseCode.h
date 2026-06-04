@@ -20,12 +20,14 @@ namespace TNgine
 	private:
 		void InitVulkan();
 		void CreateInstance();
-
+		void SetupDebugMessenger();
+		std::vector<const char*> GetRequiredInstanceExtensions();
+		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT messageSeverity, vk::DebugUtilsMessageTypeFlagsEXT messageType, const vk::DebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 	private:
 		vk::raii::Context m_Context;
 		vk::raii::Instance m_Instance = nullptr;
-
+		vk::raii::DebugUtilsMessengerEXT m_DebugMessenger = nullptr;
 	};
 }
 
