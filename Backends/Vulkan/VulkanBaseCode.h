@@ -25,9 +25,17 @@ namespace TNgine
 		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(vk::DebugUtilsMessageSeverityFlagBitsEXT messageSeverity, vk::DebugUtilsMessageTypeFlagsEXT messageType, const vk::DebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 	private:
+		void PickPhysicalDevice();
+		bool IsDeviceSuitable(const vk::raii::PhysicalDevice& device);
+
+	private:
 		vk::raii::Context m_Context;
 		vk::raii::Instance m_Instance = nullptr;
 		vk::raii::DebugUtilsMessengerEXT m_DebugMessenger = nullptr;
+
+	private:
+		vk::raii::PhysicalDevice m_PhysicalDevice = nullptr;
+
 	};
 }
 

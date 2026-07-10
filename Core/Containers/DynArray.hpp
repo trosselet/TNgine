@@ -605,7 +605,7 @@ namespace TNgine
 		uint64 m_capacity = 0;
 		T* mp_data = nullptr;
 	};
-#pragma pop(pack)
+#pragma pack(pop)
 }
 
 #endif // !DYN_ARRAY_H__INCLUDED

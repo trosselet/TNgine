@@ -6,6 +6,7 @@
 #include <ranges>
 #include <iostream>
 #include <vector>
+#include <map>
 
 #ifdef _DEBUG
 #define VULKAN_DEBUG_INFO
@@ -19,6 +20,7 @@ void TNgine::VulkanInit::Init()
 
 	InitVulkan();
 	SetupDebugMessenger();
+    PickPhysicalDevice();
 
 #ifdef VULKAN_DEBUG_INFO
 	std::cout << "|-----------------------------------------------------------------------------------------------------------|" << std::endl;
@@ -161,4 +163,94 @@ VKAPI_ATTR VkBool32 VKAPI_CALL TNgine::VulkanInit::DebugCallback(vk::DebugUtilsM
 
 
 	return vk::False;
+}
+
+
+void TNgine::VulkanInit::PickPhysicalDevice()
+{
+	auto physicalDevices = m_Instance.enumeratePhysicalDevices();
+
+    if (physicalDevices.empty())
+    { 
+        TNGINE_ASSERT(false, "Failed to find GPUs with Vulkan support!");
+    }
+
+    std::multimap<int32, vk::raii::PhysicalDevice> candidates;
+     
+    for (auto& physicalDevice : physicalDevices)
+	{
+		auto properties = physicalDevice.getProperties();
+		auto features = physicalDevice.getFeatures();
+		CLOG_INFO("Found GPU: {}", properties.deviceName.data());
+
+        uint32 score = 0;
+
+        if (properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) 
+        {
+            score += 1000;
+        }
+
+        score += properties.limits.maxImageDimension2D;
+
+        if (!features.geometryShader)
+        {
+            continue;
+        }
+        candidates.insert(std::make_pair(score, physicalDevice));
+
+	}
+
+    if (!candidates.empty() && candidates.rbegin()->first > 0)
+    {
+        m_PhysicalDevice = candidates.rbegin()->second;
+
+		if (IsDeviceSuitable(m_PhysicalDevice))
+		{
+			CLOG_INFO("Selected GPU: {}", m_PhysicalDevice.getProperties().deviceName.data());
+		}
+		else
+		{
+			TNGINE_ASSERT(false, "Selected GPU is not suitable!");
+		} 
+    }
+    else
+    {
+        TNGINE_ASSERT(false, "Failed to find a suitable GPU!");
+    }
+
+    
+     
+}
+
+bool TNgine::VulkanInit::IsDeviceSuitable(const vk::raii::PhysicalDevice& device)
+{
+    bool supportsVulkan1_3 = device.getProperties().apiVersion >= vk::ApiVersion13;
+
+    auto queueFamilies = device.getQueueFamilyProperties();
+    bool queueSupportsGraphics = std::ranges::any_of(queueFamilies, [](auto const& qfp) {return !!(qfp.queueFlags & vk::QueueFlagBits::eGraphics);});
+
+    std::vector<const char*> requiredDeviceExtension = { vk::KHRSwapchainExtensionName };
+    auto availableExtensions = device.enumerateDeviceExtensionProperties();
+
+    bool supportsAllRequiredExtensions = std::ranges::all_of(requiredDeviceExtension, [&availableExtensions](auto const& requiredDeviceExtension)
+        {
+            return std::ranges::any_of(availableExtensions,
+                [requiredDeviceExtension](auto const& availableDeviceExtension)
+                { return strcmp(availableDeviceExtension.extensionName, requiredDeviceExtension) == 0; });
+        });
+
+    auto features = device.template getFeatures2<
+        vk::PhysicalDeviceFeatures2,
+        vk::PhysicalDeviceVulkan11Features,
+        vk::PhysicalDeviceVulkan13Features,
+        vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT
+    >();
+
+    bool supportsRequiredFeatures = features.template get<
+        vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters &&
+        features.template get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering &&
+        features.template get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT
+        >().extendedDynamicState;
+
+	return supportsVulkan1_3 && queueSupportsGraphics && supportsAllRequiredExtensions && supportsRequiredFeatures;
 }
