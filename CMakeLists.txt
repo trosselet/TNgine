@@ -5,6 +5,28 @@ project(TNgine
     LANGUAGES CXX
 )
 
+# =========================================================
+# MSVC Debug 
+# =========================================================
+
+option(ENGINE_ENABLE_ASAN "Enable AddressSanitizer (MSVC)" OFF)
+
+if(ENGINE_ENABLE_ASAN AND MSVC)
+ 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fsanitize=address /Zi")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /fsanitize=address /Zi")
+
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /INCREMENTAL:NO")
+
+    string(REPLACE "/RTC1" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE "/RTC1" "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+
+    message(STATUS "AddressSanitizer enabled (MSVC) — appliqué globalement")
+
+endif()
+
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -33,7 +55,7 @@ include(Options)
 include(CompilerWarnings)
 include(Dependencies)
 include(ShaderCompilation)
-include(ModuleIncludes)
+include(ModuleIncludes) 
 
 # =========================================================
 # Subdirectories
