@@ -28,6 +28,8 @@ namespace TNgine
 		void PickPhysicalDevice();
 		bool IsDeviceSuitable(const vk::raii::PhysicalDevice& device);
 
+		void CreateLogicalDevice();
+
 	private:
 		vk::raii::Context m_Context;
 		vk::raii::Instance m_Instance = nullptr;
@@ -35,7 +37,12 @@ namespace TNgine
 
 	private:
 		vk::raii::PhysicalDevice m_PhysicalDevice = nullptr;
+		vk::raii::Device m_LogicalDevice = nullptr;
+		vk::PhysicalDeviceFeatures m_DeviceFeatures = {};
+		vk::raii::Queue m_GraphicsQueue = nullptr;
 
+	private:
+		vk::raii::SurfaceKHR m_Surface = nullptr;
 	};
 }
 

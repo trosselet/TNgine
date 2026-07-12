@@ -21,6 +21,7 @@ void TNgine::VulkanInit::Init()
 	InitVulkan();
 	SetupDebugMessenger();
     PickPhysicalDevice();
+    CreateLogicalDevice();
 
 #ifdef VULKAN_DEBUG_INFO
 	std::cout << "|-----------------------------------------------------------------------------------------------------------|" << std::endl;
@@ -158,7 +159,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL TNgine::VulkanInit::DebugCallback(vk::DebugUtilsM
 	}
 	else
 	{
-		CLOG_INFO("[VULKAN] validation layer : type {}, msg: {}", vk::to_string(messageType), pCallbackData->pMessage);
+		//CLOG_INFO("[VULKAN] validation layer : type {}, msg: {}", vk::to_string(messageType), pCallbackData->pMessage);
 	}
 
 
@@ -266,4 +267,46 @@ bool TNgine::VulkanInit::IsDeviceSuitable(const vk::raii::PhysicalDevice& device
         features.template get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>().extendedDynamicState;
 
     return supportsRequiredFeatures;
+}
+
+void TNgine::VulkanInit::CreateLogicalDevice()
+{
+	std::vector<vk::QueueFamilyProperties> queueFamilies = m_PhysicalDevice.getQueueFamilyProperties();
+
+	auto graphicsQueueFamilyIt = std::ranges::find_if(queueFamilies, [](auto const& qfp)
+		{ 
+            return !!(qfp.queueFlags & vk::QueueFlagBits::eGraphics);
+        }
+    );
+
+    auto graphicsIndex = static_cast<uint32>(std::distance(queueFamilies.begin(), graphicsQueueFamilyIt));
+
+    float32 queuePriority = 0.5f;
+    vk::DeviceQueueCreateInfo info{ .queueFamilyIndex = graphicsIndex, .queueCount = 1, .pQueuePriorities = &queuePriority };
+
+    vk::StructureChain<
+        vk::PhysicalDeviceFeatures2,
+        vk::PhysicalDeviceVulkan11Features,
+        vk::PhysicalDeviceVulkan13Features,
+        vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT
+    > featureChain = {
+        {},
+        {.shaderDrawParameters = true   },
+        {.dynamicRendering = true       },
+        {.extendedDynamicState = true   }
+    };
+
+    std::vector<const char*> requiredDeviceExtension = { vk::KHRSwapchainExtensionName };
+
+    vk::DeviceCreateInfo createInfo{
+        .pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &info,
+        .enabledExtensionCount = static_cast<uint32>(requiredDeviceExtension.size()),
+        .ppEnabledExtensionNames = requiredDeviceExtension.data()
+    };
+
+    m_LogicalDevice = vk::raii::Device{ m_PhysicalDevice, createInfo };
+
+    m_GraphicsQueue = vk::raii::Queue{ m_LogicalDevice, graphicsIndex, 0 }; 
 }
