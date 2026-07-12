@@ -8,6 +8,9 @@
 
 namespace TNgine
 {
+	class Window;
+
+
 	class VulkanInit
 	{
 	public:
@@ -15,7 +18,7 @@ namespace TNgine
 		VulkanInit() = default;
 		~VulkanInit() = default;
 
-		void Init();
+		void Init(Window* pWindow);
 
 	private:
 		void InitVulkan();
@@ -29,6 +32,9 @@ namespace TNgine
 		bool IsDeviceSuitable(const vk::raii::PhysicalDevice& device);
 
 		void CreateLogicalDevice();
+
+	private:
+		void CreateSurface();
 
 	private:
 		vk::raii::Context m_Context;

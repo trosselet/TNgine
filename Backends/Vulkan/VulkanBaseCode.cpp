@@ -2,6 +2,9 @@
 
 #include <GLFW/glfw3.h>
 
+#include <Platform/Window/WindowFactory.hpp>
+#include <Platform/Window/GLFW/GLFWWindow.h>
+
 #include <algorithm>
 #include <ranges>
 #include <iostream>
@@ -12,7 +15,7 @@
 #define VULKAN_DEBUG_INFO
 #endif // _DEBUG
 
-void TNgine::VulkanInit::Init()
+void TNgine::VulkanInit::Init(Window* pWindow)
 {
 #ifdef VULKAN_DEBUG_INFO
 	std::cout << "|--------------------------------------------------VULKAN---------------------------------------------------|"<< std::endl;
@@ -22,6 +25,7 @@ void TNgine::VulkanInit::Init()
 	SetupDebugMessenger();
     PickPhysicalDevice();
     CreateLogicalDevice();
+    CreateSurface(pWindow);
 
 #ifdef VULKAN_DEBUG_INFO
 	std::cout << "|-----------------------------------------------------------------------------------------------------------|" << std::endl;
@@ -309,4 +313,19 @@ void TNgine::VulkanInit::CreateLogicalDevice()
     m_LogicalDevice = vk::raii::Device{ m_PhysicalDevice, createInfo };
 
     m_GraphicsQueue = vk::raii::Queue{ m_LogicalDevice, graphicsIndex, 0 }; 
+}
+
+void TNgine::VulkanInit::CreateSurface(Window* pWindow)
+{
+    VkSurfaceKHR surface;
+
+    GLFWwindow* native = static_cast<GLFWwindow*>(pWindow->GetNativeWindow());
+
+    if (glfwCreateWindowSurface(*m_Instance, native, nullptr, &surface) != 0)
+    {
+        TNGINE_ASSERT(false, "Failed to create Window Surface");
+        TNGINE_ERROR("Failed to create Window Surface");
+    }
+
+    m_Surface = vk::raii::SurfaceKHR{ m_Instance, surface };
 }
